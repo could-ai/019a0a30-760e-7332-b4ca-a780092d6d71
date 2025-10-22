@@ -45,6 +45,9 @@ class _SpinnerPageState extends State<SpinnerPage> {
     'Toys',
   ];
 
+  // A variable to hold the selected index.
+  int _selectedIndex = 0;
+
   @override
   void dispose() {
     _selected.close();
@@ -53,8 +56,10 @@ class _SpinnerPageState extends State<SpinnerPage> {
 
   void _spinWheel() {
     final random = Random();
-    final selectedIndex = random.nextInt(_items.length);
-    _selected.add(selectedIndex);
+    // Generate a new random index and store it.
+    _selectedIndex = random.nextInt(_items.length);
+    // Add the index to the stream to trigger the spin.
+    _selected.add(_selectedIndex);
   }
 
   @override
@@ -75,9 +80,11 @@ class _SpinnerPageState extends State<SpinnerPage> {
                 items: [
                   for (var it in _items) FortuneItem(child: Text(it)),
                 ],
-                onFlingEnd: (selectedIndex) {
+                // This callback is triggered when the animation ends.
+                onAnimationEnd: () {
                   setState(() {
-                    _result = _items[selectedIndex];
+                    // Update the result based on the stored selected index.
+                    _result = _items[_selectedIndex];
                   });
                 },
                 indicators: const <FortuneIndicator>[
